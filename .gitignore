@@ -1,1 +1,49 @@
-"" 
+# Created by .ignore support plugin (hsz.mobi)
+### Maven template
+
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+hs_err_pid*
+*.iml
+.idea
+.DS_Store
+.classpath
+.project
+.tern-project
+nbactions.xml
+nb-configuration.xml
+npm-debug.log
+.settings/
+target/
+generated/
+bin/
+
+#commonlib/src/main/target/
+#analyticscore/src/main/target/
+#legacyanalytics/src/main/target/
+#taskmanager/src/main/target/
+#bin2configworker/src/main/target/
+#sizerui/src/main/target/
+#sizertc/src/main/target/
+#sizerb2c/src/main/target/
+#/*/target/*
+#/*/.settings/*
+# *.bin
+# *.db3
+# *.btp
+
+## Directory-based project format:
+.idea/
+.svn/
+
+*.js
+*.js.map
+src/main/webapp/node_modules
+src/main/webapp/typings

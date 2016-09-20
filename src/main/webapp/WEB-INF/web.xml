@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ Copyright (c) 2016 EMC Corporation
+ All Rights Reserved
+
+ This software contains the intellectual property of EMC Corporation or is
+ licensed to EMC Corporation from third parties. Use of this software and the
+ intellectual property contained therein is expressly limited to the terms and
+ conditions of the License Agreement under which it is provided by or on behalf
+ of EMC.
+-->
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+    <resource-ref>
+        <description>Angular 2 data source</description>
+        <res-ref-name>jdbc/angular2-data-soure</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+    </resource-ref>
+</web-app>
