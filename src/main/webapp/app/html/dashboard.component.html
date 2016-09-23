@@ -1,16 +1,45 @@
 <!DOCTYPE html>
-<div>
-    DashBoard
-    <div class="col-md-6">
-        <button (click)="openCategory()">
-            Categories
+<div class="container-fluid m-t-1">
+
+    <div>
+        <button  class="btn btn-primary" (click)="addUser()">
+            Add new user
         </button>
-        <button (click)="openCities()">
-            Cities
-        </button>
-        <button (click)="updateDetails()">
-            Update details
-        </button>
+        <!--        <button (click)="updateDetails()">
+                    Update details
+                </button>-->
     </div>
+    <table class="table">
+        <colgroup>
+            <col style="width: 125px"/>
+            <col style="width: 130px"/>
+            <col style="width: 150px"/>
+            <col style="width: 95px"/>
+            <col style="width: 200px"/>
+            <col style="width: 200px"/>
+            <col style="width: 185px"/>
+        </colgroup>
+        <thead>
+            <tr>
+                <th><span>First Name</span></th>
+                <th><span >Last Name</span></th>
+                <th><span >Email Id</span></th>
+                <th><span >Address</span></th>
+                <th><span >Phone number</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let user of users; let i = index">
+                <td><span style="margin-left: 20px; margin-top: 10px">{{user.firstName}}</span></td>
+                <td><span style="margin-left: 20px; margin-top: 10px">{{user.lastName}}</span></td>
+                <td><span style="margin-left: 20px; margin-top: 10px;">{{user.emailId}}</span></td>
+                <td><span style="margin-left: 20px; margin-top: 10px">{{user.address}}</span></td>
+                <td><span style="margin-left: 50px; margin-top: 10px">{{user.phoneNo}}</span></td>
+        <button (click) = "editUser(user.userId)" class="glyphicon glyphicon-pencil" style="margin-left: 10px; margin-top: 10px"></button>
+        <button (click) = "deleteUser(user.userId)" class="glyphicon glyphicon-trash" style="margin-left: 10px; margin-top: 10px"></button>
+        </tr>
+        </tbody>
+    </table>
+
 </div>
 <router-outlet></router-outlet>

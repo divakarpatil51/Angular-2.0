@@ -7,14 +7,19 @@ import { UserDetailsFormComponent } from './components/user-details-form.compone
 const route: Routes = [
     {
         path: '',
-        component: DashboardComponent
+        redirectTo: '/dashboard',
+        pathMatch: 'full'
+    },
+    {
+        path: 'dashboard',
+        component: DashboardComponent,
     },
     {
         path: 'categories',
         component: CategoryComponent
     },
     {
-        path: 'updatedetails',
+        path: 'updatedetails/:id',
         component: UserDetailsFormComponent
     }
 ];

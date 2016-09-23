@@ -58,6 +58,14 @@ nav a.router-link-active {
   color: #039be5;
 }
 
+.alert {
+   color: red;
+}
+
+.alert-danger {
+    color: red;
+}
+
 /* items class */
 .items {
   margin: 0 0 2em 0;
