@@ -13,24 +13,26 @@ export class UserDetailsFormComponent implements OnInit {
     constructor(private router: Router, private userService: UserService, private route: ActivatedRoute) { };
     user: User;
     isNewUser: boolean;
-    
+
     ngOnInit(): void {
         this.route.params.forEach((params: Params) => {
             //Param is sent in form of string hence converting to number
             let id = +params['id'];
 
-            this.userService.getUsers().then(users1 => {
+            this.userService.getUsers().then(users => {
                 if (id === -1) {
                     this.isNewUser = true;
-                    this.user = new User(users1.length + 1, '', '', '', '', 1);
-                    this.user.phoneNo = 
+                    this.user = new User(users.length + 1, '', '', '', '', 0);
                 } else {
                     this.isNewUser = false;
-                    this.userService.getUserById(id).then(user => this.user = user);
+                    for (let user of users) {
+                        if (user.userId === id) {
+                            this.user = user;
+                            break;
+                        }
+                    }
                 }
             });
-
-
         });
     }
 
@@ -40,18 +42,22 @@ export class UserDetailsFormComponent implements OnInit {
     updateUser(): void {
 
         this.userService.updateUser(this.user)
-            .then(user => {
-                //If using router navigation then data is not persisted using history temporarily
-                //TODO - Use router.navigateByUrl for navigation
-                window.history.back();
+            .then(() => {
+                this.router.navigateByUrl("/dashboard");
             }
             );
 
     }
 
     addUser(): void {
-        this.userService.addUser(this.user);
-        //        this.router.navigateByUrl("");
-        window.history.back();
+        this.userService.addUser(this.user)
+        .then(()=>{
+            this.router.navigateByUrl("/dashboard");
+        });
+        
+    }
+    
+    cancel(): void {
+        this.router.navigateByUrl("/dashboard");
     }
 }

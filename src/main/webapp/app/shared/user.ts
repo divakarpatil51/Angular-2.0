@@ -11,8 +11,7 @@ export class User {
         public lastName: string,
         public emailId: string,
         public address : string,
-        public phoneNo: number) {
-
+        public phoneNumber: number) {
     };
 
 }

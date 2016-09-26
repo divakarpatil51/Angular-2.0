@@ -1,17 +1,21 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from './../shared/user';
 import { UserService } from './../shared/user.service';
+import { Subject }   from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
+// Observable class extensions
+import 'rxjs/add/observable/of';
+import 'rxjs/add/observable/throw';
 
-//const USERS: User[] = [
-//    { userId: 1, firstName: 'aaa', lastName: 'bbb', emailId: 'aaa@b.com', address: 'ddd', phoneNo: 1234567890 },
-//    { userId: 2, firstName: 'aaaa', lastName: 'bbbb', emailId: 'ccc@b.com', address: 'ddd', phoneNo: 1234567890 }
-//];
+// Observable operators
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/switchMap';
 
 @Component({
     selector: 'dashboard',
@@ -22,16 +26,32 @@ export class DashboardComponent implements OnInit {
     constructor(private router: Router, private userService: UserService) { };
 
     users: User[];
+    searchedUsers: Observable<User[]>;
+
+    private searchTerms = new Subject<string>();
+
+    private success(users: User[]) {
+        this.users = users;
+    }
 
     ngOnInit(): void {
+
         this.userService.getUsers().
-            then(users => this.users = users)
-            .catch(x => { console.log("Error while getting users")});
+            then(users => this.success(users))
+            .catch(() => { console.log("Error while getting users") });
+
+        this.searchedUsers = this.searchTerms
+            .debounceTime(300)
+            .distinctUntilChanged()
+            .switchMap(text => text ? this.userService.searchUser(text) : Observable.of<User[]>([]))
+            .catch(error => {
+                console.log(error);
+                return Observable.of<User[]>([]);
+            });
     }
 
     addUser(): void {
-//        $(".overlay").show(true);
-        let link = ['updatedetails',-1];
+        let link = ['updatedetails', -1];
         this.router.navigate(link);
     }
 
@@ -39,10 +59,15 @@ export class DashboardComponent implements OnInit {
         let link = ['updatedetails', userId];
         this.router.navigate(link);
     }
-    
+
     deleteUser(userIndex: number): void {
-        this.userService.deleteUser(userIndex).then(users => this.users = users);
-//        this.users.splice(userIndex,1);
+        this.userService.deleteUser(userIndex).then(users => this.success(users));
+    }
+
+    searchUser(text: string): void {
+
+        //Producer for our observable event stream
+        this.searchTerms.next(text);
     }
 }
 

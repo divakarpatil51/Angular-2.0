@@ -1,78 +1,65 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions, RequestMethod, Request } from '@angular/http';
+import { Http, Response } from '@angular/http';
 import { User } from './user'
 import 'rxjs/add/operator/toPromise';
-
-var users: User[] = [
-        { userId: 1, firstName: 'aaa', lastName: 'bbb', emailId: 'aaa@b.com', address: 'ddd', phoneNo: 1234567890 },
-        { userId: 2, firstName: 'aaaa', lastName: 'bbbb', emailId: 'ccc@b.com', address: 'ddd', phoneNo: 1234567890 }
-];
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class UserService {
-    // { 'user-key': 'd235b77747ad3d2f4e587ac0740d4899' }
-    private headers = new Headers({
-        'user-key': 'd235b77747ad3d2f4e587ac0740d4899',
-        'Access-Control-Allow-Origin': '*',
-    });
-    categoryUrl = 'http://localhost:8080/api/login';
 
-    options = new RequestOptions({
-        method: RequestMethod.Get,
-        url: this.categoryUrl,
-        headers: this.headers
-    });
-    req = new Request(this.options);
+    //    private headers = new He    aders({
+    //        'user-key': 'd235b77747ad3d2f4e587ac0740    d4899',
+    //        'Access-Control-Allow-Origin    ': '*',
+    //    });
+
+    //    options = new RequestOption    s({
+    //        method: RequestMethod.G    et,
+    //        url: this.categoryU    rl,
+    //        headers: this.head    ers
+    //        });
+    //    req = new Request(this.options);
+
+    categoryUrl = 'http://localhost:8080/api/';
+
     constructor(private http: Http) { };
 
-    //Remove this and get data from BE
-    
-
-    //    getCategories(): Promise<any> {
-    //        return this.http.get(this.categoryUrl, this.req)
-    //            .toPromise()
-    //            .then(response => { response.json().data as any[] })
-    //            .catch(this.handleError);
-    //    }
-
     getUsers(): Promise<User[]> {
-        return Promise.resolve(users).catch(this.handleError);
+        return this.http.get(this.categoryUrl + 'getusers')
+            .toPromise()
+            .then(response => response.json() as User[])
+            .catch(this.handleError);
     };
 
     getUserById(userId: number): Promise<User> {
-        return this.getUsers().then(users => users.find(user => user.userId === userId));
+        return this.http.get(this.categoryUrl + 'getuser/' + userId)
+            .toPromise()
+            .then(response => response.json() as User)
+            .catch(this.handleError);
     }
 
     deleteUser(userId: number): Promise<User[]> {
-
-        //TODO - Remove this code and Send userId to BE to delete
-        return this.getUsers().then(users1 => {
-            for (var i = 0; i < users1.length; i++) {
-                if (userId === users1[i].userId) {
-                    users1.splice(i, 1);
-                    break;
-                }
-            }
-            users = users1;
-            return users1;
-        });
+        return this.http.delete(this.categoryUrl + "deleteuser/" + userId)
+            .toPromise()
+            .then(response => response.json() as User[])
     }
 
-    updateUser(user: User): Promise<void> {
-        return this.getUsers().then(users =>
-        { 
-            for(let user1 of users){
-                if (user1.userId === user.userId){
-                    user1 = user;
-                    break; 
-                }
-            }
-            users = users;
-        })
+    updateUser(user: User): Promise<User[]> {
+        return this.http.post(this.categoryUrl + "updateuser/" + user.userId, user)
+            .toPromise()
+            .then(response => response.json() as User[])
+            .catch(this.handleError);
+    }
+
+    addUser(user: User): Promise<User[]> {
+        return this.http.post(this.categoryUrl + "adduser", user)
+            .toPromise()
+            .then(response => response.json() as User[])
+            .catch(this.handleError);
     }
     
-    addUser(user: User): void {
-        users.push(user);
+    searchUser(text: string): Observable<User[]> {
+        return this.http.get(this.categoryUrl + `searchuser?search=${text}`)
+            .map((r: Response) => r.json() as User[]);
     }
 
     private handleError(error: any): Promise<any> {

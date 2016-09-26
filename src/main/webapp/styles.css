@@ -144,6 +144,23 @@ nav a.router-link-active {
   border-radius: 4px 0 0 4px;
 }
 
+.search-result{
+  border-bottom: 1px solid gray;
+  border-left: 1px solid gray;
+  border-right: 1px solid gray;
+  width:195px;
+  height: 30px;
+  padding: 5px;
+  background-color: white;
+  cursor: pointer;
+}
+#search-box{
+  width: 200px;
+  height: 30px;
+  top: 100px;
+  margin-left: 50%;
+}
+
 /* everywhere else */
 * { 
   font-family: Arial, Helvetica, sans-serif; 
