@@ -4,6 +4,7 @@ import com.angular2.entity.UserDetails;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserDetailRepository extends JpaRepository<UserDetails, Long>{
  
-    //Added constructor to get query result as List<UserDetails> otherwise it returns as List<Object[]>
-    @Query("select new UserDetails(u.userId, u.firstName, u.lastName, u.emailId, u.address, u.phoneNumber) from UserDetails u where u.lastName like %?1% or u.firstName like %?1%")
-    List<UserDetails> findByFirstNameOrLastName(String lastName);
+    @Query("select u from UserDetails u where u.lastName like %:lastname% or u.firstName like %:lastname%")
+    List<UserDetails> findByFirstNameOrLastName(@Param("lastname") String lastName);
 }

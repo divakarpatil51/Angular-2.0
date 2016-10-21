@@ -1,8 +1,14 @@
 package com.angular2.controller;
 
-import com.angular2.entity.UserDetails;
+import com.angular2.entity.*;
 import com.angular2.repository.UserDetailRepository;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +23,9 @@ public class UserController {
 
     @Autowired
     UserDetailRepository userDetailRepository;
+
+    @PersistenceContext
+    private EntityManager manager;
 
     @RequestMapping(value = "/adduser", method = RequestMethod.POST)
     public List<UserDetails> addUser(@RequestBody UserDetails userDetails) {
@@ -41,7 +50,7 @@ public class UserController {
     @RequestMapping(value = "/updateuser/{id}", method = RequestMethod.POST)
     public List<UserDetails> updateUser(@PathVariable long id,
             @RequestBody UserDetails userDetails) {
-        System.out.println("com.angular2.controller.UserController.updateUser()"+ userDetails.getFirstName());
+        System.out.println("com.angular2.controller.UserController.updateUser()" + userDetails.getFirstName());
         UserDetails user = userDetailRepository.findOne(id);
         user.setAddress(userDetails.getAddress());
         user.setEmailId(userDetails.getEmailId());
@@ -61,9 +70,22 @@ public class UserController {
 
     @RequestMapping(value = "/searchuser", method = RequestMethod.GET)
     public List<UserDetails> searchUser(@RequestParam(value = "search") String searchText) {
-        
-        List<UserDetails> userDetails = userDetailRepository.findByFirstNameOrLastName(searchText);
-        System.out.println("com.angular2.controller.UserController.searchUser()"+ userDetails.size());
+//        LocalDate today = new LocalDate();
+        List<UserDetails> userDetails = null;
+        try {
+            CriteriaBuilder builder = manager.getCriteriaBuilder();
+            CriteriaQuery<UserDetails> query = builder.createQuery(UserDetails.class);
+            Root<UserDetails> root = query.from(UserDetails.class);
+
+            Predicate hasBirthday = builder.equal(root.get(UserDetails_.firstName), searchText);
+            query.where(builder.and(hasBirthday));
+             userDetails = manager.createQuery(query.select(root)).getResultList();
+//        List<UserDetails> userDetails = userDetailRepository.findByFirstNameOrLastName(searchText);
+            System.out.println("com.angular2.controller.UserController.searchUser()" + userDetails.size());
+        } catch (Exception e) {
+            System.out.println("com.angular2.controller.UserController.searchUser() Exception: " + e);
+        }
+
         return userDetails;
     }
 }
