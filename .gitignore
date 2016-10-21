@@ -43,7 +43,7 @@ bin/
 .idea/
 .svn/
 
-*.js
+src/main/webapp/app/**/*.js
 *.js.map
 src/main/webapp/node_modules
 src/main/webapp/typings
